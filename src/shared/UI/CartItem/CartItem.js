@@ -1,10 +1,5 @@
-
-
 const CartItem = () => {
-    return (
-        <>
-        </>
-    )
-}
+  return <></>;
+};
 
-export default CartItem
+export default CartItem;

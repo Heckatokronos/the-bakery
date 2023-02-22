@@ -1,16 +1,17 @@
-import CartIcon from './CartIcon'
+import Button from "../../../shared/UI/Button/Button";
+import CartIcon from "./CartIcon";
 
 import classes from "./CartButton.module.css";
 
 const CartButton = (props) => {
   return (
-    <button className={classes.button}>
+    <Button className={classes.button}>
       <span className={classes.icon}>
         <CartIcon />
       </span>
       <span>Ваша корзина</span>
       <span className={classes.badge}>3</span>
-    </button>
+    </Button>
   );
 };
 
