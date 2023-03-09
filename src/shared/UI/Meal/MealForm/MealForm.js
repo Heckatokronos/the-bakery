@@ -1,15 +1,39 @@
+import { useRef, useState } from "react";
+
 import Button from "../../Button/Button";
 import Input from "../../Input/Input";
 
 import classes from "./MealForm.module.css";
 
 const MealForm = (props) => {
+  const [amountIsValid, setAmountIsValid] = useState(true);
+  const amountInputRef = useRef();
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    const enteredAmount = amountInputRef.current.value;
+    const enteredAmountNumber = +enteredAmount;
+
+    if (
+      enteredAmount.trim().length === 0 ||
+      enteredAmount < 1 ||
+      enteredAmount > 5
+    ) {
+      setAmountIsValid(false);
+      return;
+    }
+
+    props.onAddToCart(enteredAmountNumber);
+  };
+
   return (
-    <form className={classes.form}>
+    <form className={classes.form} onSubmit={submitHandler}>
       <Input
+        ref={amountInputRef}
         label="Количество"
         input={{
-          id: "amount" + props.id,
+          id: "amount_" + props.id,
           type: "number",
           min: "1",
           max: "5",
@@ -17,7 +41,8 @@ const MealForm = (props) => {
           defaultValue: "1",
         }}
       />
-      <Button onClick> Добавить в корзину </Button>
+      <Button> Добавить в корзину </Button>
+      {!amountIsValid && <p> Введите оптимальное значение (1-5). </p>}
     </form>
   );
 };

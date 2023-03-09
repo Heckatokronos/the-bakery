@@ -1,5 +1,5 @@
-import AvailableMeals from "../../entities/AvailableMeals/AvailableMeals";
 import MealsSummary from "../../entities/MealsSummary/MealsSummary";
+import AvailableMeals from "../../entities/AvailableMeals/AvailableMeals";
 
 const Meals = () => {
   return (
