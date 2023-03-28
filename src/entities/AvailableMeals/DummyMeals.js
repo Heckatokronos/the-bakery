@@ -1,40 +1,81 @@
+import { useEffect, useState } from "react";
 import MealItem from "../../shared/UI/Meal/MealItem/MealItem";
+import Card from "../../shared/UI/Card/Card";
 
-const DUMMY_MEALS = [
-  {
-    id: "m1",
-    name: "Суши",
-    description: "Вкуснейшая рыба и овощи",
-    price: 599.9,
-  },
-  {
-    id: "m2",
-    name: "Шницель",
-    description: "Немецкий деликатес!",
-    price: 299.9,
-  },
-  {
-    id: "m3",
-    name: "Барбекю-бургер",
-    description: "Американский, сырой, мясной",
-    price: 299.9,
-  },
-  {
-    id: "m4",
-    name: "Миска зелени",
-    description: "Полезная... и зеленая...",
-    price: 349.9,
-  },
-];
+import classes from "./AvailableMeals.module.css";
 
-const mealsList = DUMMY_MEALS.map((meal) => (
-  <MealItem
-    key={meal.id}
-    id={meal.id}
-    name={meal.name}
-    description={meal.description}
-    price={meal.price}
-  />
-));
+const AvailableMeals = () => {
+  const [meals, setMeals] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [httpError, setHttpError] = useState();
 
-export default mealsList;
+  useEffect(() => {
+    const fetchMeals = async () => {
+      const response = await fetch(
+        "https://react-http-6081b-default-rtdb.europe-west1.firebasedatabase.app/Meals.json"
+      );
+
+      if (!response.ok) {
+        throw new Error("Что-то пошло не так!");
+      }
+
+      const responseData = await response.json();
+
+      const loadedMeals = [];
+
+      for (const key in responseData) {
+        loadedMeals.push({
+          id: key,
+          name: responseData[key].name,
+          description: responseData[key].description,
+          price: responseData[key].price,
+        });
+      }
+
+      setMeals(loadedMeals);
+      setIsLoading(false);
+    };
+
+    fetchMeals().catch((error) => {
+      setIsLoading(false);
+      setHttpError(error.message);
+    });
+    fetchMeals();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <section className={classes.MealsLoading}>
+        <p>Загружаем...</p>
+      </section>
+    );
+  }
+
+  if (httpError) {
+    return (
+      <section className={classes.MealsError}>
+        <p>{httpError}</p>
+      </section>
+    );
+  }
+
+  const mealsList = meals.map((meal) => (
+    <MealItem
+      key={meal.id}
+      id={meal.id}
+      name={meal.name}
+      description={meal.description}
+      price={meal.price}
+    />
+  ));
+
+  return (
+    <section className={classes.meals}>
+      <Card>
+        <ul>{mealsList}</ul>
+      </Card>
+    </section>
+  );
+};
+
+export default AvailableMeals;
